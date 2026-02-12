@@ -1,33 +1,61 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-
 import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Tabs } from 'expo-router';
+import { Calendar, CalendarDays, CalendarRange, History } from 'lucide-react-native';
+import React from 'react';
+import { useColorScheme } from 'react-native';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme() ?? 'light';
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
+        tabBarActiveTintColor: Colors[colorScheme].tint,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: Colors[colorScheme].background,
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+        headerTitleStyle: {
+          fontWeight: '700',
+          fontSize: 24,
+          color: Colors[colorScheme].text,
+        },
         tabBarButton: HapticTab,
+        tabBarStyle: {
+          backgroundColor: Colors[colorScheme].background,
+          borderTopWidth: 0,
+          elevation: 0,
+        }
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Day',
+          tabBarIcon: ({ color }) => <Calendar size={24} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="month"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Month',
+          tabBarIcon: ({ color }) => <CalendarDays size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="year"
+        options={{
+          title: 'Year',
+          tabBarIcon: ({ color }) => <CalendarRange size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: 'History',
+          tabBarIcon: ({ color }) => <History size={24} color={color} />,
         }}
       />
     </Tabs>
