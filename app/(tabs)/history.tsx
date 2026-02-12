@@ -53,9 +53,9 @@ export default function HistoryScreen() {
         }, {});
 
         // Convert to sections array
-        const sectionsArray = Object.entries(grouped).map(([date, goals]) => ({
+        const sectionsArray = Object.entries(grouped).map(([date, goals]): { title: string; data: any[] } => ({
             title: date,
-            data: goals
+            data: goals as any[]
         }));
 
         setSections(sectionsArray);
