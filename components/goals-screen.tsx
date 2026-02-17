@@ -1,5 +1,6 @@
 import { Colors } from '@/constants/theme';
 import { deleteGoal, getGoals, rolloverGoal, saveGoal, updateGoal } from '@/utils/storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { addDays, addMonths, addYears, format, isBefore, isSameDay, isSameMonth, isSameYear, startOfDay, startOfMonth, startOfYear, subDays, subMonths, subYears } from 'date-fns';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react-native';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -18,6 +19,7 @@ export const GoalsScreen = ({ type }: GoalsScreenProps) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [modalVisible, setModalVisible] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [showDatePicker, setShowDatePicker] = useState(false);
     const colorScheme = useColorScheme() ?? 'light';
     const theme = Colors[colorScheme];
 
@@ -71,6 +73,7 @@ export const GoalsScreen = ({ type }: GoalsScreenProps) => {
     };
 
     const handlePrev = () => {
+        console.log('Previous date');
         if (type === 'day') setCurrentDate(subDays(currentDate, 1));
         else if (type === 'month') setCurrentDate(subMonths(currentDate, 1));
         else setCurrentDate(subYears(currentDate, 1));
@@ -110,6 +113,14 @@ export const GoalsScreen = ({ type }: GoalsScreenProps) => {
         setCurrentDate(new Date());
     };
 
+    const onDateChange = (event: any, selectedDate?: Date) => {
+        console.log('Date picker changed:', event.type, selectedDate);
+        setShowDatePicker(false);
+        if (selectedDate) {
+            setCurrentDate(selectedDate);
+        }
+    };
+
     const isCurrentPeriod = () => {
         const now = new Date();
         if (type === 'day') return isSameDay(currentDate, now);
@@ -125,7 +136,12 @@ export const GoalsScreen = ({ type }: GoalsScreenProps) => {
                     <TouchableOpacity onPress={handlePrev}>
                         <ChevronLeft size={28} color={theme.tint} />
                     </TouchableOpacity>
-                    <ThemedText type="subtitle" style={styles.dateText}>{getHeaderText()}</ThemedText>
+                    <TouchableOpacity onPress={() => {
+                        console.log('Date header clicked, showing picker');
+                        setShowDatePicker(true);
+                    }}>
+                        <ThemedText type="subtitle" style={styles.dateText}>{getHeaderText()}</ThemedText>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={handleNext}>
                         <ChevronRight size={28} color={theme.tint} />
                     </TouchableOpacity>
@@ -176,6 +192,14 @@ export const GoalsScreen = ({ type }: GoalsScreenProps) => {
                 onSave={handleAddGoal}
                 type={type}
             />
+            {showDatePicker && (
+                <DateTimePicker
+                    value={currentDate}
+                    mode="date"
+                    display="default"
+                    onChange={onDateChange}
+                />
+            )}
         </ThemedView>
     );
 };
